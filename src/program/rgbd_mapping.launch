@@ -24,9 +24,9 @@
   <arg name="launch_prefix"           default=""/>              <!-- for debugging purpose, it fills launch-prefix tag of the nodes -->
   <arg name="approx_sync"             default="true"/>         <!-- if timestamps of the input topics are not synchronized -->
    
-  <arg name="rgb_topic"               default="/camera/infra1/image_rect_raw" />
-  <arg name="depth_registered_topic"  default="/camera/depth/image_rect_raw" />
-  <arg name="camera_info_topic"       default="/camera/infra1/camera_info" />
+  <arg name="rgb_topic"               default="/camera/color/image_raw" />
+  <arg name="depth_registered_topic"  default="/camera/aligned_depth_to_color/image_raw" />
+  <arg name="camera_info_topic"       default="/camera/color/camera_info" />
   <arg name="compressed"              default="false"/>
    
   <arg name="subscribe_scan"          default="false"/>         <!-- Assuming 2D scan if set, rtabmap will do 3DoF mapping instead of 6DoF -->

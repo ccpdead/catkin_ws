@@ -18,17 +18,17 @@
   <arg name="rtabmapviz_cfg"          default="$(find rtabmap_ros)/launch/config/rgbd_gui.ini" />
   <arg name="rviz_cfg"                default="$(find rtabmap_ros)/launch/config/rgbd.rviz" />
   
-  <arg name="frame_id"                default="base_link"/>     <!-- Fixed frame id, you may set "base_link" or "base_footprint" if they are published -->
+  <arg name="frame_id"                default="camera_link"/>     <!-- Fixed frame id, you may set "base_link" or "base_footprint" if they are published -->
   <arg name="database_path"           default="~/.ros/rtabmap.db"/>
   <arg name="rtabmap_args"            default=""/>   <!-- delete_db_on_start, udebug -->
   <arg name="launch_prefix"           default=""/>
   <arg name="approx_sync"             default="false"/>         <!-- if timestamps of the input topics are not synchronized -->
   
   <arg name="stereo_namespace"        default="/stereo_camera"/>
-  <arg name="left_image_topic"        default="$(arg stereo_namespace)/left/image_rect_color" />
-  <arg name="right_image_topic"       default="$(arg stereo_namespace)/right/image_rect" />      <!-- using grayscale image for efficiency -->
-  <arg name="left_camera_info_topic"  default="$(arg stereo_namespace)/left/camera_info" />
-  <arg name="right_camera_info_topic" default="$(arg stereo_namespace)/right/camera_info" />
+  <arg name="left_image_topic"        default="/camera/infra1/image_rect_raw" />
+  <arg name="right_image_topic"       default="/camera/infra2/image_rect_raw" />      <!-- using grayscale image for efficiency -->
+  <arg name="left_camera_info_topic"  default="/camera/infra1/camera_info" />
+  <arg name="right_camera_info_topic" default="/camera/infra2/camera_info" />
   <arg name="compressed"              default="false"/>
    
   <arg name="subscribe_scan"          default="false"/>         <!-- Assuming 2D scan if set, rtabmap will do 3DoF mapping instead of 6DoF -->
