@@ -3,3 +3,5 @@ devel/
 src/CMake*
 *.zip
 *.setting
+*.pdf
+.catkin

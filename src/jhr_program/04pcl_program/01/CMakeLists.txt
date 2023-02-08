@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(01)
+project(pcl_program)
 
 find_package(PCL REQUIRED
 PATHS ~/pcl-19/install

@@ -438,16 +438,16 @@ void Jhr_moto::odom_publish(void)
 
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
     // //发布tf转化
-    // geometry_msgs::TransformStamped odom_trans;
-    // odom_trans.header.stamp = curr_time;
-    // odom_trans.header.frame_id = "wheel_odom_link";
-    // odom_trans.child_frame_id = "base_link";
+    geometry_msgs::TransformStamped odom_trans;
+    odom_trans.header.stamp = curr_time;
+    odom_trans.header.frame_id = "wheel_odom_link";
+    odom_trans.child_frame_id = "base_footprint";
 
-    // odom_trans.transform.translation.x = x;
-    // odom_trans.transform.translation.y = y;
-    // odom_trans.transform.translation.z = 0.0;
-    // odom_trans.transform.rotation = odom_quat;
-    // odom_broadcaster->sendTransform(odom_trans);//发布tf转换。
+    odom_trans.transform.translation.x = x;
+    odom_trans.transform.translation.y = y;
+    odom_trans.transform.translation.z = 0.0;
+    odom_trans.transform.rotation = odom_quat;
+    odom_broadcaster->sendTransform(odom_trans);//发布tf转换。
 
     // 发布里程机wheel_odom
     nav_msgs::Odometry odom;
@@ -458,7 +458,7 @@ void Jhr_moto::odom_publish(void)
     odom.pose.pose.position.y = y;
     odom.pose.pose.position.z = 0.0;
     odom.pose.pose.orientation = odom_quat;
-    odom.child_frame_id = "base_link";
+    odom.child_frame_id = "base_footprint";
     odom.twist.twist.linear.x = Jhr_moto::getLinear(); //获取线速度
     odom.twist.twist.linear.y = 0;
     odom.twist.twist.angular.z = Jhr_moto::getAngular(); //获取角速度

@@ -11,7 +11,7 @@
 
   <!-- Choose visualization -->
   <arg name="rviz"                    default="true" />
-  <arg name="rtabmapviz"              default="false" /> 
+  <arg name="rtabmapviz"              default="true" /> 
   
   <!-- Localization-only mode -->
   <arg name="localization"            default="false"/>

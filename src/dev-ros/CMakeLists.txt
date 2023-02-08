@@ -19,6 +19,10 @@ PATHS ~/pcl-19/install
 NO_DEFAULT_PATH)
 
 find_package(OpenCV REQUIRED)
+message(STATUS "OpenCV Version:"${OpenCV_VERSION})
+message(${PROJECT_SOURCE_DIR})
+message(${PROJECT_BINARY_DIR})
+message(${CMAKE_SOURCE_DIR})
 
 
 ## Declare ROS messages and services
@@ -35,10 +39,6 @@ catkin_package(CATKIN_DEPENDS message_runtime)
 
 
 ## Build publisher and subscribe
-
-
-message(STATUS " CMAKE_SOURCE_DIR=========== ${CMAKE_SOURCE_DIR}")
-
 
 set(CMAKE_BUILD_TYPE Release)
 
