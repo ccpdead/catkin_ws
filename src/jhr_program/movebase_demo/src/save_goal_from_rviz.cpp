@@ -37,7 +37,7 @@ void Feedback(const geometry_msgs::PoseStamped::ConstPtr& feedback)
 int main(int argc, char** argv)
 {
 
-    in.open("/home/ubuntu/Desktop/pose.txt",ios::trunc);
+    in.open("/home/jhr/Desktop/pose.txt",ios::trunc);
     ros::init(argc, argv, "sub");
     ros::NodeHandle nh;
     //$ 收到rviz上的发布的机器人导航目标后进入回调函数，经目标保存在文件中

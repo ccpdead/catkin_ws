@@ -81,7 +81,7 @@ void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr &feedback)
 }
 
 //￥ 导航坐标点的名称
-std::string filename = "/home/ubuntu/Desktop/pose.txt";
+std::string filename = "/home/jhr/Desktop/pose.txt";
 
 //￥ main
 int main(int argc, char **argv)
