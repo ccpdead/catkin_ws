@@ -1,9 +1,9 @@
-#include<ros/ros.h>
-#include<iostream>
-#include<geometry_msgs/PoseStamped.h>
-#include<geometry_msgs/PoseWithCovarianceStamped.h>
-#include<std_msgs/String.h>
-#include<fstream>
+#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <ros/ros.h>
+#include <std_msgs/String.h>
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 /*
@@ -12,9 +12,8 @@ using namespace std;
 
 ofstream in;
 
-void Feedback(const geometry_msgs::PoseStamped::ConstPtr& feedback)
-{
-    cout<<"<<<Received>>>"<<endl;
+void Feedback(const geometry_msgs::PoseStamped::ConstPtr& feedback) {
+    cout << "<<<Received>>>" << endl;
     float data[7] = {0};
     data[0] = feedback->pose.position.x;
     data[1] = feedback->pose.position.y;
@@ -25,29 +24,26 @@ void Feedback(const geometry_msgs::PoseStamped::ConstPtr& feedback)
     data[5] = feedback->pose.orientation.y;
     data[6] = feedback->pose.orientation.z;
 
-    for(int i = 0;i<7;i++){
-        if(i!=6){
-            in<<data[i]<<",";
-        }else{
-            in<<data[i]<<"\n";
+    for (int i = 0; i < 7; i++) {
+        if (i != 6) {
+            in << data[i] << ",";
+        } else {
+            in << data[i] << "\n";
         }
     }
 }
 
-int main(int argc, char** argv)
-{
-
-    in.open("/home/jhr/Desktop/pose.txt",ios::trunc);
+int main(int argc, char** argv) {
+    in.open("/home/jhr/Desktop/pose.txt", ios::trunc);
     ros::init(argc, argv, "sub");
     ros::NodeHandle nh;
     //$ 收到rviz上的发布的机器人导航目标后进入回调函数，经目标保存在文件中
     ros::Subscriber sub = nh.subscribe("/move_base_simple/goal", 1000, Feedback);
-    cout<<"Read for saving......"<<endl;
-    while(ros::ok())
-    {
+    cout << "Read for saving......" << endl;
+    while (ros::ok()) {
         ros::spinOnce();
     }
     in.close();
-    cout<<"demo stopped.................."<<std::endl;
+    cout << "demo stopped.................." << std::endl;
     return 0;
 }

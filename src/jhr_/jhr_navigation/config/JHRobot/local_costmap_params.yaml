@@ -5,8 +5,8 @@ local_costmap:
   # 机器人参考坐标系
   robot_base_frame: base_footprint
 
-  update_frequency: 3
-  publish_frequency: 3
+  update_frequency: 10
+  publish_frequency: 10
 
   # static_map: false  #不使用静态地图
   rolling_window: true #使用滚动地图

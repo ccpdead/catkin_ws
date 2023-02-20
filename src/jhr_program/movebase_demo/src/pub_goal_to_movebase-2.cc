@@ -1,25 +1,24 @@
 #include <actionlib/client/simple_action_client.h>
+
 #include <move_base_msgs/MoveBaseAction.h>
+#include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
+#include <signal.h>
 
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/LinearMath/Quaternion.h>
 
 #include <cmath>
-
 #include <fstream>
 #include <string>
 
-// movebase_global
 move_base_msgs::MoveBaseGoal goal;
-// ￥ 目标点与当前点之间的距离
-double distance = 2;
-double angle = 0;
 
-//% 对服务进行重命名，本服务与movebase进行联系。
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> Client;
 ros::Publisher cmdVelPub;
-int file_line = 0;
+ros::Publisher marker_pub;
+int32_t file_line = 0;//路径点总行数
+
 
 //$ 获取保存地址文件的行数
 void got_lines(std::string& filename, int& lines) {
@@ -36,14 +35,24 @@ void got_lines(std::string& filename, int& lines) {
     std::cout << "lines = " << lines << std::endl;
 }
 
-// ￥ action的result
-void resultCb() {
+/*当接收到SIGINT信号后，进入此程序，关闭movebase导航*/
+void shutdown(int sig) {
+    cmdVelPub.publish(geometry_msgs::Twist());
+    ros::Duration(1).sleep();  // sleep for a second
+    ROS_INFO("nav_square.cpp enden!");
+    ros::shutdown();
+}
+
+
+
+//% result
+void activeCb() {
     ROS_INFO("Goal Received");
 }
 
-// ￥ action的feedback
+//% feedback
 void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback) {
-    float x, y;
+    float x,y;
     x = feedback->base_position.pose.position.x;
     y = feedback->base_position.pose.position.y;
 
@@ -58,39 +67,37 @@ void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback) {
     quation2.setY(goal.target_pose.pose.orientation.y);
     quation2.setZ(goal.target_pose.pose.orientation.z);
 
-    double roll1 = 0, pitch1 = 0, yaw1 = 0;
-    double roll2 = 0, pitch2 = 0, yaw2 = 0;
+    double roll1=0,pitch1=0,yaw1=0;
+    double roll2=0,pitch2=0,yaw2=0;
 
     tf2::Matrix3x3 m1(quation1);
     tf2::Matrix3x3 m2(quation2);
 
-    m1.getRPY(roll1, pitch1, yaw1);
-    m2.getRPY(roll2, pitch2, yaw2);
+    m1.getRPY(roll1,pitch1,yaw1);
+    m2.getRPY(roll2,pitch2,yaw2);
 
-    distance = sqrt(pow((x - goal.target_pose.pose.position.x), 2) + pow((y - goal.target_pose.pose.position.y), 2));
-    angle = fabs(yaw1 - yaw2);
-    // printf("distance = %f\r\n",distance);
-    // printf("angle = %f\r\n",angle);
-    // printf("x = %f, y = %f \r\n",goal.target_pose.pose.position.x, goal.target_pose.pose.position.y);
-    // printf("roll1 :%f,pitch1 :%f,yaw1 :%f",roll1,pitch1,yaw1);
-    // printf("roll2 :%f,pitch2 :%f,yaw2 :%f",roll2,pitch2,yaw2);
+    float distance = sqrt(pow((x-goal.target_pose.pose.position.x),2) + pow((y-goal.target_pose.pose.position.y),2));
+    float angle = fabs(yaw1 - yaw2);
+    printf("distance =%f\r\n",distance);
+    printf("angle=%f\r\n",angle);
 }
 
 // ￥ 导航坐标点的名称
 std::string filename = "/home/jhr/Desktop/pose.txt";
 
-// ￥ main
 int main(int argc, char** argv) {
     ros::init(argc, argv, "nav_move_base");
     std::string topic = "/cmd_vel";
     ros::NodeHandle node;
+    // Subscribe to the move base action server;
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base", true);
+    signal(SIGINT, shutdown);
+    ROS_INFO("move_base_square.cpp start...");
 
-    ROS_INFO(">>>>>>>>>start<<<<<<<<<<");
+    // How big is the square we want the robot to navigate
+    double square_size = 1.0;
 
-    got_lines(filename, file_line);  // 获取goal数
-
-    // ￥ goal数据存到geometry_msgs::Pose数组中
+    got_lines(filename, file_line);/*计算有几个导航点*/
     geometry_msgs::Pose pose_list[file_line];
 
     // ￥ 加载导航数据点
@@ -140,40 +147,49 @@ int main(int argc, char** argv) {
     ROS_INFO("Connected to move base server");
     ROS_INFO("Starting navigation test");
 
+    // Initialize a counter to track waypoints
     int count = 0;
-    //$ 依次将导航坐标点发布给 move_base
+    // Cycle through the four waypoints
     while ((count < file_line) && ros::ok()) {
+
         // Use the map frame to define goal poses
         goal.target_pose.header.frame_id = "map";
+
         // set the time stamp to now
         goal.target_pose.header.stamp = ros::Time::now();
+
         // set the goal pose to the i-th waypoint
         goal.target_pose.pose = pose_list[count];
 
         // start the robot moving toward the goal
         // send the goal pose to the movebaseaction server
-        ac.sendGoal(goal, Client::SimpleDoneCallback(), &resultCb, &feedbackCb);
-        printf("x = %f, y = %f\r\n", goal.target_pose.pose.position.x, goal.target_pose.pose.position.y);
+        // ￥ 发布goal action
+        ac.sendGoal(goal, Client::SimpleDoneCallback(), &activeCb, &feedbackCb);
+        printf("x=%f\ny=%f\r\n",goal.target_pose.pose.position.x, goal.target_pose.pose.position.y);
         
-        // if we dont get there in time abort the goal
-        ros::Duration(5).sleep();
+        //$ 等待movebase的action服务，在180秒后是否发布result
+        bool finished_within_time = ac.waitForResult(ros::Duration(180));
 
-        //$当离目标小于30cm，跳出本次规划，进入下一次规划
-        while (distance >= 0.2 || angle >= 1.57) {
-            if (!ros::ok())
-                break;
+        // if we dont get there in time abort the goal
+        if (!finished_within_time) {
+            ac.cancelGoal();
+            ROS_INFO("Timed out achieving goal");
+        } else {
+            if (ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) {
+                ROS_INFO("Goal succeeded");
+            } else {
+                ROS_INFO("the base failed for some reason");
+            }
         }
-        printf("distance = %f\r\n", distance);
-        printf("angle = %f\r\n", angle);
-        if (!ros::ok())
-            break;
-        //$ 发布下一个目标点
+        //for the next goal
         count += 1;
-        // 循环发送目标
-        if (count == file_line) {
+
+        //cycle pub
+        if(count == file_line){
             count = 0;
         }
-        ROS_INFO("reday for the next goal\n");
+
+        ROS_ERROR("ready for the next goal\n");
     }
     ROS_INFO("move_base_square.cpp end");
     return 0;

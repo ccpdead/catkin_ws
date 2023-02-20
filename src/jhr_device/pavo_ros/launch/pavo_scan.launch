@@ -5,8 +5,8 @@
   <node name="PavoScanNode"    pkg="pavo_ros"  type="pavo_scan_node"  output="screen">
     <param name="frame_id"     type="string"   value="base_laser_link"/><!--配置frame_id-->
     <param name="scan_topic"   type="string"   value="scan" /><!--设置激光雷达的topic名称--> 
-    <param name="angle_min"    type="double"   value="-135.00" /><!--设置最小角度，单位度.取值范围[-135,135].default=-135.0-->
-    <param name="angle_max"    type="double"   value="135.00"/><!--设置最大角度，单位度.取值范围[-135,135].default=135.0-->
+    <param name="angle_min"    type="double"   value="-130.00" /><!--设置最小角度，单位度.取值范围[-135,135].default=-135.0-->
+    <param name="angle_max"    type="double"   value="130.00"/><!--设置最大角度，单位度.取值范围[-135,135].default=135.0-->
     <param name="range_min"    type="double"   value="0.10" /><!--设置最小距离，单位米，default=0.10-->
     <param name="range_max"    type="double"   value="20.0" /><!--设置最大距离，单位米，default=20-->
     <param name="inverted"     type="bool"     value="false"/><!--配置雷达是否倒装，倒装true，正装false-->

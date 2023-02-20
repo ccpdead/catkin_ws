@@ -30,7 +30,12 @@ target_link_libraries(save_goal_from_rviz
 add_executable(pub_goal_to_movebase src/pub_goal_to_movebase.cpp)
 target_link_libraries(pub_goal_to_movebase
   ${catkin_LIBRARIES})
-  
+
+#/////////////////////////////////////////////////////////////////////  
+add_executable(pub_goal_to_movebase-2 src/pub_goal_to_movebase-2.cc)
+target_link_libraries(pub_goal_to_movebase-2
+  ${catkin_LIBRARIES})
+
 #/////////////////////////////////////////////////////////////////////
 add_executable(save_goal_from_tf_transform src/save_goal_from_tf_transform.cpp)
 target_link_libraries(save_goal_from_tf_transform

@@ -1,8 +1,8 @@
-#include <ros/ros.h>
-#include <iostream>
-#include <fstream>
 #include <geometry_msgs/PoseStamped.h>
+#include <ros/ros.h>
 #include <tf/transform_listener.h>
+#include <fstream>
+#include <iostream>
 
 #include <std_msgs/String.h>
 using namespace std;
@@ -11,8 +11,7 @@ using namespace std;
 */
 
 ofstream in;
-int main(int argc, char **argv)
-{
+int main(int argc, char** argv) {
     // char type;
     // cout<<"input the type"<<endl;
     // cin>>type;
@@ -34,17 +33,14 @@ int main(int argc, char **argv)
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    while (ros::ok())
-    {
-
+    while (ros::ok()) {
         static int times = 0;
         times++;
         printf("saved times %d\r\n", times);
         cin >> input;
         if (input == 's')
             ros::spinOnce();
-        else if (input == 'q')
-        {
+        else if (input == 'q') {
             break;
         }
         //////////////////////////////////////////////////////
@@ -71,17 +67,10 @@ int main(int argc, char **argv)
         // else
         //$ 导航模式
         // {
-        try
-        {
-            listener.waitForTransform("/map",
-                                      "/base_footprint",
-                                      ros::Time(0), ros::Duration(0.5));
-            listener.lookupTransform("/map",
-                                     "/base_footprint",
-                                     ros::Time(0), transform);
-        }
-        catch (tf::TransformException &ex)
-        {
+        try {
+            listener.waitForTransform("/map", "/base_footprint", ros::Time(0), ros::Duration(0.5));
+            listener.lookupTransform("/map", "/base_footprint", ros::Time(0), transform);
+        } catch (tf::TransformException& ex) {
             ROS_ERROR("%s", ex.what());
             return -1;
         }
@@ -95,14 +84,10 @@ int main(int argc, char **argv)
         data[5] = transform.getRotation().y();
         data[6] = transform.getRotation().z();
         //$将数据写入txt文件
-        for (int i = 0; i < 7; i++)
-        {
-            if (i != 6)
-            {
+        for (int i = 0; i < 7; i++) {
+            if (i != 6) {
                 in << data[i] << ",";
-            }
-            else
-            {
+            } else {
                 in << data[i] << "\n";
             }
         }
