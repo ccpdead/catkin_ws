@@ -7,8 +7,8 @@ map_type: costmap
 
 #膨胀层参数设置
 inflation_laer:
-  inflation_radius: 0.3 #膨胀半径
-  cost_scaling_factor: 10 #膨胀系数
+  inflation_radius: 0.26 #膨胀半径
+  cost_scaling_factor: 15 #膨胀系数
   enable: true
 
 #障碍层参数设置
