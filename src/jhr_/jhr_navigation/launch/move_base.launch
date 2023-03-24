@@ -3,7 +3,6 @@
   <arg name="map_arg" default="false"/>
   <arg name="map_file"       default="$(find jhr_navigation)/maps/rtabmap_map.yaml"/>
   
-
     <group if="$(arg map_arg)">
         <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
             <remap from="map" to="saved_map"/>
@@ -29,7 +28,7 @@
     <!--￥ 是否使用线性速度优化-->
     <remap from="cmd_vel" to="/cmd_vel_movebase"/>
     <!-- <remap from="cmd_vel" to="/cmd_vel"/> -->
-
+    
     <!--$ 使用轮式里程机-->
     <remap from="odom" to="/wheel_odom"/>
     <param name="frame_id" value="base_footprint" />

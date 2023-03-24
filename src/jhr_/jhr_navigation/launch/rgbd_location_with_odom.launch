@@ -96,4 +96,7 @@
 
   </include>
 
+<include file="$(find jhr_navigation)/launch/move_base.launch" />
+
+
 </launch>
