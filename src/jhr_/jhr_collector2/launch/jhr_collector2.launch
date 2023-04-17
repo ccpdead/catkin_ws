@@ -1,0 +1,3 @@
+<launch>
+<node pkg="jhr_collector2" type="jhr_collector2" name="jhr_collector2" output="screen"/>
+</launch>
